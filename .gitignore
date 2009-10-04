@@ -1,0 +1,8 @@
+*.user
+config.py
+*.pyc
+*.suo
+already_downloaded.txt
+files_to_download.txt
+PythonScriptHelper/obj/*
+PythonScriptHelper/bin/*
