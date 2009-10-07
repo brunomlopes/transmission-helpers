@@ -35,6 +35,9 @@ class MarkToDownload:
     def __str__(self):
         return "Mark to download %s." % self.name
 
+class NoNewTorrents:
+    def __str__(self):
+        return "No new torrents"
 
 class Error:
     def __init__(self, message, exception):
@@ -67,18 +70,16 @@ class GrowlLogger(EventLogger):
         subprocess.call(['growlnotify', '/t:T', message])
 
 logger = EventLogger()
-try:
-    from lib import pysnarl
-    if (pysnarl.snGetVersion):
-        logger = SnarlLogger
-except:
-    pass
 
-try:
-    subprocess.call("growlnotify")
-    logger = GrowlLogger()
-except WindowsError:
-    pass
+from lib import pysnarl
+if (pysnarl.snGetVersion()):
+    logger = SnarlLogger(pysnarl)
+else:
+    try:
+        subprocess.call("growlnotify")
+        logger = GrowlLogger()
+    except WindowsError:
+        pass
 
 
 def get_client():

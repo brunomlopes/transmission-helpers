@@ -4,3 +4,8 @@ class Configuration:
     host = "host"
     port = 49152
 
+    class Fetcher:
+        host = "host"
+        username = "username"
+        directory = "directory"
+        

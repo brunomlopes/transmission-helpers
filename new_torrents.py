@@ -36,6 +36,12 @@ for torrent in finished_torrents_with_new_files:
     f.close()
 
     logger(MarkToDownload(torrent.name))
+    count += 1
+
+if count == 0:
+    logger(NoNewTorrents())
+
 f = file("files_to_download.txt","ab")
-f.write('!rm files_to_download.txt')
+f.write('!rm files_to_download.txt\n')
 f.close()
+
