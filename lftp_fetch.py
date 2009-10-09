@@ -23,10 +23,10 @@ def still_moving_files(sftp):
 def remove_remote_file(sftp):
     sftp.remove(remote_file)
 
-def read_until_timeout(chan):
+def read_until_timeout(chan, max_tries = 999999):
     s = ""
     try:
-        while True:
+        for i in range(max_tries):
             s += chan.recv(1024)
     except timeout: return s
 
@@ -43,11 +43,11 @@ else:
     chan.settimeout(2)
 
     read_until_timeout(chan)
-    command = 'screen -S lftp lftp -c "open sftp://%(remote_username)s@%(remote_host)s ; lcd /mnt/40/movement/ ; source files_to_download.txt" \n' % dict(remote_username = Configuration.username, remote_host = Configuration.host)
+    command = 'screen -S lftp lftp -c "open sftp://%(remote_username)s@%(remote_host)s ; set limit-rate %(download_limit)i:%(upload_limit)i ; lcd /mnt/40/movement/ ; source files_to_download.txt" \n' % dict(remote_username = Configuration.username, remote_host = Configuration.host, download_limit = Configuration.download_speed_limit, upload_limit = Configuration.upload_speed_limit )
     chan.send(command)
     read_until_timeout(chan)
     chan.send("\n")
-    read_until_timeout(chan)
+    read_until_timeout(chan,max_tries=4)
     chan.close()
     remove("files_to_download.txt")
     log("screen started. local file deleted")
